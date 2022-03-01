@@ -1,0 +1,55 @@
+time:
+
+  AVERAGE:
+    refactor:
+      loc: 0.0050167577
+    rewrite:
+      loc: 0.0050167577
+
+  ABAP:
+    refactor:
+      loc: 0.009139523
+    rewrite:
+      loc: 0.009139523
+
+  CCPP:
+    refactor:
+      loc: 0.0242697
+    rewrite:
+      loc: 0.0242697
+
+  CLOJURE:
+    refactor:
+      loc: 0.106485012
+    rewrite:
+      loc: 0.106485012
+
+  COBOL:
+    refactor:
+      loc: 0.452890451505625
+    rewrite:
+      loc: 0.452890451505625
+
+  CSHARP:
+    refactor:
+      loc: 0.0105839062691138
+    rewrite:
+      loc: 0.0105839062691138
+
+  JAVA:
+    refactor:
+      loc: 0.0105839062691138
+    rewrite:
+      loc: 0.0105839062691138
+
+  JS:
+    refactor:
+      loc: 0.035823163260779
+    rewrite:
+      loc: 0.035823163260779
+
+  HTML:
+    refactor:
+      loc: 0.00475341812756618
+    rewrite:
+      loc: 0.00475341812756618

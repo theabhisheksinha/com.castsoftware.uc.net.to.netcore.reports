@@ -1,0 +1,29 @@
+artifacts:
+
+  get_property:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$property
+      RETURN r.value as value LIMIT 1
+    params:
+      - id
+      - property
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+net_core:
+
+  set_pending:
+    query: >
+      MATCH (d:Document:$$APPLICATION$$)
+      WHERE ID(d)=$document_id
+      SET d.Tags = [ x in d.Tags WHERE NOT x="Pending" ] + "Pending"
+      RETURN d
+    params:
+      - document_id
+    anchors:
+      - APPLICATION
+    return:
+      - document

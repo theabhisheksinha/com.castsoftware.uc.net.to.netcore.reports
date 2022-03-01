@@ -1,0 +1,26 @@
+migration:
+
+  supported_type:
+    - CAST_DotNet_DotNetGroupMethod
+    - CAST_DotNet_InstantiatedMethod
+    - CAST_DotNet_Method
+    - CAST_DotNet_MethodExternal
+
+  object_properties:
+    - Dotnet standard plus platform
+    - Dotnet core
+    - Dotnet core plus platform extensions
+
+  properties_to_migrate:
+    - property: keydotnetmigration_CustomMetrics.dotnetcore_platform_extension
+      name: .Net Core Platform extension
+      description: This is a test of description to be modified. Value is {0}
+    - property: dotnetmigration_CustomMetrics.dotnetcore
+      name: .Net Core
+      description: This is a test of description to be modified. Value is {0}
+    - property: dotnetmigration_CustomMetrics.dotnetstandardplatform
+      name: .Net Standard Platform
+      description: This is a test of description to be modified. Value is {0}
+    - property: dotnetmigration_CustomMetrics.dotnetmigrationrecommendedchanges
+      name: .Net Migration recommended change
+      description: This is a test of description to be modified. Value is {0}

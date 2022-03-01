@@ -1,0 +1,8 @@
+difficulty:
+
+  System.Data.SqlClient:
+    time: 1
+
+  System.Web.UI:
+    time: 1
+

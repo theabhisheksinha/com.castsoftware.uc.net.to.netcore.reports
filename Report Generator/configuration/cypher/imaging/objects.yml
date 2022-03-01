@@ -1,0 +1,133 @@
+object:
+  get_by_id:
+    query: >
+      MATCH (o:$$APPLICATION$$:Object)
+      WHERE ID(o)=$id
+      RETURN o as object
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  get_complexity:
+    query: >
+      MATCH (o:$$APPLICATION$$:Object)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$complexity
+      RETURN r.value as value LIMIT 1
+    params:
+      - id
+      - complexity
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+  get_inner_complexity:
+    query: >
+      MATCH (o:$$APPLICATION$$:Object)<-[:BELONGTO]-(s:SubObject)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$complexity
+      RETURN SUM(toInteger(r.value)) as value LIMIT 1
+    params:
+      - id
+      - complexity
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+  get_complexity_in:
+    query: >
+      MATCH (o:$$APPLICATION$$:Object)<-[]-(call:Object)
+      WHERE ID(o)=$id
+      WITH DISTINCT call
+      MATCH (call)-[r]->(objp:ObjectProperty)
+      WHERE objp.Description=$complexity
+      RETURN SUM(CASE WHEN complexity_val < $upper_limit THEN complexity_val ELSE $upper_limit END ) as value LIMIT 1
+    params:
+      - id
+      - complexity
+      - upper_limit
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+
+  get_fan_in:
+    query: >
+      MATCH (o:Object)<-[r]-(call:Object)
+      WHERE ID(o)=$id
+      RETURN COUNT(DISTINCT call) as fan_in
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - fan_in
+
+  get_fan_out:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[r]->(call:Object)
+      WHERE ID(o)=$id
+      RETURN COUNT(DISTINCT call) as fan_out
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - fan_out
+
+  get_transaction_number:
+    query: >
+      MATCH (o:$$APPLICATION$$:Object)<-[r:Contains]-(t:Transaction)
+      WHERE ID(o)=$id
+      RETURN COUNT(DISTINCT t) as transaction
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - transaction
+
+  get_by_type:
+    query: >
+      MATCH (o:$$APPLICATION$$)
+      WHERE o.Type=$type
+      RETURN DISTINCT o as object
+    params:
+      - type
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  get_parent:
+    query: >
+      MATCH (o:$$APPLICATION$$:SubObject)-[:BELONGTO]->(p)
+      WHERE ID(o)=$id
+      RETURN p as parent
+    params:
+      - id
+      - complexity
+    anchors:
+      - APPLICATION
+    return:
+      - parent
+
+  get_callees_by_type:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[]->(p:Object)
+      WHERE ID(o)=$id and p.Type=$type
+      RETURN DISTINCT p as callee
+    params:
+      - id
+      - type
+    anchors:
+      - APPLICATION
+    return:
+      - callee
+
+
+

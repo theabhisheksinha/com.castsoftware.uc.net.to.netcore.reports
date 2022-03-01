@@ -1,0 +1,26 @@
+aspx_decommission:
+
+  get_aspx_complexity:
+    query: >
+      MATCH (o1:Object:$$APPLICATION$$)-[]->(o2:Object)
+      WHERE o1.Type="Active Server PageX" AND o2.Type="C# Class"
+      WITH o1, o2
+      OPTIONAL MATCH (o2:Object)<-[:BELONGTO]-(s:SubObject)-[r2]->(objp:ObjectProperty) WHERE objp.Description="Essential Complexity"
+      WITH o1, o2, r2
+      OPTIONAL MATCH (o1:Object)-[r3]->(objp:ObjectProperty) WHERE objp.Description="Number of code lines"
+      WITH o1, o2, r2, r3
+      OPTIONAL MATCH (o2:Object)-[r4]->(objp:ObjectProperty) WHERE objp.Description="Number of code lines"
+      RETURN DISTINCT o1.Type as object_type, o1.Name as name, o1.FullName as full_name, o2.Name as cs_file_attached_name,
+      o2.FullName as cs_file_attached_full_name, SUM(toInteger(r2.value)) as cs_complexity, toInteger(r4.value) as cs_loc,
+      toInteger(r3.value) as html_loc
+    anchors:
+      - APPLICATION
+    return:
+      - object_type
+      - name
+      - full_name
+      - cs_file_attached_name
+      - cs_file_attached_full_name
+      - cs_complexity
+      - cs_loc
+      - html_loc

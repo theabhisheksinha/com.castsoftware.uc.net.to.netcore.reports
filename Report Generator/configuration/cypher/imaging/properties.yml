@@ -1,0 +1,49 @@
+properties:
+
+  get_prop_value:
+    query: >
+      MATCH (o1:$$APPLICATION$$)-[r3]->(objp:ObjectProperty)
+      WHERE ID(o1)=$id AND objp.Description=$property_name
+      RETURN r3.value as prop_value
+    params:
+      - type
+      - property_name
+    anchors:
+      - APPLICATION
+    return:
+      - prop_value
+
+  get_loc_value:
+    query: >
+      MATCH (o1:$$APPLICATION$$)-[r3]->(objp:ObjectProperty)
+      WHERE ID(o1)=$id AND objp.Description="Number of code lines"
+      RETURN toInteger(r3.value) as loc_value
+    anchors:
+      - APPLICATION
+    return:
+      - loc_value
+
+  get_complexity:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$complexity
+      RETURN toInteger(r.value) as value LIMIT 1
+    params:
+      - id
+      - complexity
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+  get_essential_complexity:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description="Essential Complexity"
+      RETURN toInteger(r.value) as value LIMIT 1
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - value

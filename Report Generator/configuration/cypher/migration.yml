@@ -1,0 +1,79 @@
+migration:
+
+  get_recommended_change:
+    query: >
+      MATCH (raw:Raw:$$APPLICATION$$)-[r]->(obj:ObjectProperty)
+      WHERE ID(raw)=$id AND obj.Description="Dotnet migration recommended changes"
+      RETURN DISTINCT raw as node
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - node
+
+  clean_links:
+    query: >
+      MATCH (a:$$APPLICATION$$)-[r:BELONGTO]->(b:$$APPLICATION$$)
+      WHERE r.CreatedBy="MoveBelongFromToHidden"
+      DELETE r
+      RETURN COUNT(DISTINCT r) as num_links
+    anchors:
+      - APPLICATION
+    return:
+      - num_links
+
+  get_artifacts_by_type:
+    query: >
+      MATCH (o:$$APPLICATION$$:Raw )-[:Property]->(p:ObjectProperty)
+      WHERE p.Description IN $prop_value
+      RETURN DISTINCT o as artifact
+    params:
+      - types
+      - prop_value
+    anchors:
+      - APPLICATION
+    return:
+      - artifact
+
+  get_properties_under_raw:
+    query: >
+      MATCH (o:$$APPLICATION$$:Raw )<-[:BELONGTO*1..]-(s:Raw)
+      WHERE ID(o)=$id
+      WITH s
+      MATCH (s)-[r:Property]->(p:ObjectProperty)
+      WHERE p.Description=$prop_value
+      RETURN COLLECT(DISTINCT r.value) as list_prop
+    params:
+      - id
+      - prop_value
+    anchors:
+      - APPLICATION
+    return:
+      - list_prop
+
+  get_artifacts_object_like_by_type:
+    query: >
+      MATCH (o:$$APPLICATION$$:Raw )<-[]-(s:SubObject)
+      WITH o
+      MATCH (o)<-[:BELONGTO*1..]-(s:Raw)-[:Property]->(p:ObjectProperty)
+      WHERE p.Description IN $prop_value
+      RETURN DISTINCT o as artifact
+    params:
+      - prop_value
+    anchors:
+      - APPLICATION
+    return:
+      - artifact
+
+  get_sub_object_raw:
+    query: >
+      MATCH (o:$$APPLICATION$$:Raw )<-[]-(s:SubObject)
+      WHERE ID(o)=$id
+      RETURN s as sub_object
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - sub_object

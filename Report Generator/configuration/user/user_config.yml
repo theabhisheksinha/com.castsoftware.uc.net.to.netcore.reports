@@ -1,0 +1,7 @@
+user_configuration:
+
+  cost:
+    person_day_rate: 1600 # Cost for one person working on the project per day
+    learning_curve_factor: 1.2
+
+

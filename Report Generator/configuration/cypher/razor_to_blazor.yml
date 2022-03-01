@@ -1,0 +1,13 @@
+razor_blazor:
+
+  get_function_actions:
+    query: >
+      MATCH (o:$$APPLICATION$$)<-[:BELONGTO]-(s:SubObject { Type: "HTML5 Razor method call" })-[]->(a:SubObject)-[]->(f:SubObject)
+      WHERE ID(o)=$id and a.Type STARTS WITH "DotNet Controller" and f.Type="C# Method"
+      RETURN DISTINCT f as function
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - function

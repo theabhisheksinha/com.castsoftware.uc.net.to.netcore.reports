@@ -1,0 +1,91 @@
+sub_object:
+  get_by_id:
+    query: >
+      MATCH (o:$$APPLICATION$$:SubObject)
+      WHERE ID(o)=$id
+      RETURN o as sub_object
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - sub_object
+
+  get_parent:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[:BELONGTO]->(p)
+      WHERE ID(o)=$id
+      RETURN p as parent
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - parent
+
+  get_complexity:
+    query: >
+      MATCH (o:$$APPLICATION$$:SubObject)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$complexity
+      RETURN r.value as value LIMIT 1
+    params:
+      - id
+      - complexity
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+  get_complexity_in:
+    query: >
+      MATCH (o:$$APPLICATION$$:SubObject)<-[]-(call:SubObject)
+      WHERE ID(o)=$id
+      WITH DISTINCT call
+      MATCH (call)-[r]->(objp:ObjectProperty)
+      WHERE objp.Description=$complexity
+      RETURN SUM(CASE WHEN complexity_val < $upper_limit THEN complexity_val ELSE $upper_limit END ) as value LIMIT 1
+    params:
+      - id
+      - complexity
+      - upper_limit
+    anchors:
+      - APPLICATION
+    return:
+      - value
+
+  get_transaction_number:
+    query: >
+      MATCH (o:$$APPLICATION$$:SubObject)<-[r:Contains]-(t:Transaction)
+      WHERE ID(o)=$id
+      RETURN COUNT(DISTINCT t) as transaction
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - transaction
+
+
+  get_fan_in:
+    query: >
+      MATCH (o:$$APPLICATION$$:SubObject)<-[r]-(call:SubObject)
+      WHERE ID(o)=$id
+      RETURN COUNT(DISTINCT call) as fan_in
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - fan_in
+
+  get_fan_out:
+    query: >
+      MATCH (o:$$APPLICATION$$)-[r]->(call:Object)
+      WHERE ID(o)=$id
+      RETURN COUNT(DISTINCT call) as fan_out
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - fan_out
