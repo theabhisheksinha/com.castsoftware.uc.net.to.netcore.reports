@@ -20,18 +20,42 @@ class Neo4jConnectionConfiguration(metaclass=SingletonMeta):
         default_val = self.default_config.get_value("neo4j", "bolt_url")
         return self.config_parser.get_argument("URL", default_val)
 
+
+    #def get_url(self) -> str:
+    #   Get the BOLT URL
+    #   :return:
+    #
+    #    bolt_url = self.default_config.get_value("neo4j", "bolt_url")
+    #    try:
+    #        url = self.config_parser.get_argument("URL", "localhost")
+    #        port = self.config_parser.get_argument("PORT", "7697")
+    #
+    #        if not (url is None or port is None):
+    #            bolt_url = "bolt://{0}:{1}".format(url, port)
+
+    #    except Exception as ignored:
+     #       pass
+
+    #    return bolt_url
+    # Code edited by abhishek Sinha for reading the IP/URL and port from the application.ini file rather than hardcoding it here....
+
+    #Get the BOLT URL, separating URL and port for flexibility. New routine for reading the URL and port from the ini file
+
     def get_url(self) -> str:
         """
-        Get the BOLT URL
-        :return:
-        """
-        bolt_url = self.default_config.get_value("neo4j", "bolt_url")
-        try:
-            url = self.config_parser.get_argument("URL", "localhost")
-            port = self.config_parser.get_argument("PORT", "7687")
+        Get the BOLT URL, separating URL and port for flexibility.
 
-            if not (url is None or port is None):
-                bolt_url = "bolt://{0}:{1}".format(url, port)
+        :return: The BOLT URL string.
+        """
+
+        bolt_url = self.default_config.get_value("neo4j", "bolt_url")
+
+        try:
+            url = self.config_parser.get_argument("URL")
+            port = self.config_parser.get_argument("PORT")
+
+            if url and port:
+                bolt_url = f"bolt://{url}:{port}"
 
         except Exception as ignored:
             pass
